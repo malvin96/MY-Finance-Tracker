@@ -1,0 +1,1581 @@
+<html lang="id" class="scroll-smooth" style="height:100%;"><head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MY Personal Finance</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+/>
+<link
+  href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+  rel="stylesheet"
+/>
+<style>
+  body {
+    font-family: "Poppins", sans-serif;
+  }
+  /* Custom scrollbar for better UX */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #1e293b;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: #3b82f6;
+    border-radius: 10px;
+  }
+  /* Number input with thousand separator */
+  input[type="text"].currency {
+    font-variant-numeric: tabular-nums;
+  }
+</style>
+</head>
+<body class="bg-gradient-to-b from-blue-900 via-black to-black min-h-screen flex flex-col" style="height:100vh; max-height:100vh;">
+
+<!-- Container 9:16 aspect ratio -->
+<div class="flex flex-col flex-grow max-w-md mx-auto w-full h-full" style="aspect-ratio:9/16;">
+
+  <!-- Header -->
+  <header class="flex justify-between items-center px-5 py-3 bg-gradient-to-r from-blue-800 via-blue-900 to-black text-white shadow-md">
+    <h1 class="text-xl font-semibold tracking-wide select-none">MY Personal Finance</h1>
+    <div class="flex space-x-3 text-sm font-medium">
+      <button id="userMalvinBtn" class="px-3 py-1 rounded-md bg-gradient-to-r from-blue-600 to-blue-400 hover:from-blue-700 hover:to-blue-500 transition text-white focus:outline-none focus:ring-2 focus:ring-blue-300" aria-label="Pilih User Malvin">Malvin</button>
+      <button id="userYovitaBtn" class="px-3 py-1 rounded-md bg-gradient-to-r from-gray-700 to-gray-500 hover:from-gray-800 hover:to-gray-600 transition text-white focus:outline-none focus:ring-2 focus:ring-gray-400" aria-label="Pilih User Yovita">Yovita</button>
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <main class="flex-grow overflow-y-auto bg-gradient-to-b from-blue-900 via-black to-black p-4 text-white relative">
+
+    <!-- User indicator -->
+    <div id="currentUserIndicator" class="mb-4 text-center font-semibold text-lg select-none"></div>
+
+    <!-- Menu Tabs -->
+    <nav class="flex justify-around mb-4 border-b border-blue-700">
+      <button data-menu="dashboard" class="menu-tab flex flex-col items-center py-2 px-1 text-blue-400 hover:text-white focus:outline-none focus:text-white" aria-label="Dashboard">
+        <i class="fas fa-tachometer-alt fa-lg mb-1"></i>
+        <span class="text-xs">Dashboard</span>
+      </button>
+      <button data-menu="transaksi" class="menu-tab flex flex-col items-center py-2 px-1 text-blue-400 hover:text-white focus:outline-none focus:text-white" aria-label="Transaksi">
+        <i class="fas fa-exchange-alt fa-lg mb-1"></i>
+        <span class="text-xs">Transaksi</span>
+      </button>
+      <button data-menu="akun" class="menu-tab flex flex-col items-center py-2 px-1 text-blue-400 hover:text-white focus:outline-none focus:text-white" aria-label="Akun">
+        <i class="fas fa-wallet fa-lg mb-1"></i>
+        <span class="text-xs">Akun</span>
+      </button>
+      <button data-menu="transfer" class="menu-tab flex flex-col items-center py-2 px-1 text-blue-400 hover:text-white focus:outline-none focus:text-white" aria-label="Transfer">
+        <i class="fas fa-paper-plane fa-lg mb-1"></i>
+        <span class="text-xs">Transfer</span>
+      </button>
+      <button data-menu="history" class="menu-tab flex flex-col items-center py-2 px-1 text-blue-400 hover:text-white focus:outline-none focus:text-white" aria-label="History">
+        <i class="fas fa-history fa-lg mb-1"></i>
+        <span class="text-xs">History</span>
+      </button>
+    </nav>
+
+    <!-- Content Sections -->
+    <section id="dashboard" class="menu-content hidden h-full overflow-y-auto">
+      <!-- Dashboard content -->
+      <div class="mb-4 flex justify-center space-x-3">
+        <button data-dashboard-user="malvin" class="dashboard-user-btn px-4 py-1 rounded-md bg-gradient-to-r from-blue-600 to-blue-400 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-blue-300">Malvin</button>
+        <button data-dashboard-user="yovita" class="dashboard-user-btn px-4 py-1 rounded-md bg-gradient-to-r from-gray-700 to-gray-500 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-gray-400">Yovita</button>
+        <button data-dashboard-user="gabungan" class="dashboard-user-btn px-4 py-1 rounded-md bg-gradient-to-r from-green-700 to-green-500 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-green-400">Gabungan</button>
+      </div>
+
+      <div class="mb-4 flex justify-center space-x-3">
+        <select id="dashboardRange" class="bg-blue-900 text-white rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-400">
+          <option value="daily">Harian</option>
+          <option value="weekly">Mingguan</option>
+          <option value="monthly" selected>Bulan</option>
+          <option value="yearly">Tahun</option>
+        </select>
+        <select id="dashboardCategory" class="bg-blue-900 text-white rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-400">
+          <option value="all">Semua Kategori</option>
+          <option value="pendapatan">Pendapatan</option>
+          <option value="pengeluaran">Pengeluaran</option>
+          <option value="transfer">Transfer</option>
+        </select>
+      </div>
+
+      <div id="dashboardSummary" class="mb-4 grid grid-cols-1 gap-3 text-center">
+        <!-- Summary cards inserted by JS -->
+      </div>
+
+      <div class="mb-4">
+        <canvas id="dashboardChart" class="w-full h-64 rounded-md bg-blue-800"></canvas>
+      </div>
+
+      <div class="flex justify-center">
+        <button id="downloadReportBtn" class="px-5 py-2 bg-gradient-to-r from-green-600 to-green-400 rounded-md font-semibold text-black hover:from-green-700 hover:to-green-500 focus:outline-none focus:ring-2 focus:ring-green-300">
+          <i class="fas fa-file-excel mr-2"></i>Download Laporan Excel
+        </button>
+      </div>
+    </section>
+
+    <section id="transaksi" class="menu-content hidden h-full overflow-y-auto">
+      <form id="transaksiForm" class="space-y-4 bg-blue-900 bg-opacity-70 rounded-md p-4 shadow-lg">
+        <h2 class="text-xl font-semibold mb-2 text-center">Tambah Transaksi</h2>
+
+        <div>
+          <label for="transaksiUser" class="block mb-1 font-semibold">User</label>
+          <select id="transaksiUser" required class="w-full rounded-md bg-blue-800 text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <option value="malvin">Malvin</option>
+            <option value="yovita">Yovita</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="transaksiType" class="block mb-1 font-semibold">Tipe Transaksi</label>
+          <select id="transaksiType" required class="w-full rounded-md bg-blue-800 text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <option value="pendapatan">Pendapatan</option>
+            <option value="pengeluaran">Pengeluaran</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="transaksiSubCategory" class="block mb-1 font-semibold">Sub Kategori</label>
+          <select id="transaksiSubCategory" required class="w-full rounded-md bg-blue-800 text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <!-- Options updated dynamically -->
+          </select>
+        </div>
+
+        <div>
+          <label for="transaksiNominal" class="block mb-1 font-semibold">Nominal (Rp)</label>
+          <input
+            id="transaksiNominal"
+            type="text"
+            inputmode="numeric"
+            pattern="[0-9.,]*"
+            placeholder="0"
+            class="currency w-full rounded-md bg-blue-800 text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            required
+            autocomplete="off"
+          />
+        </div>
+
+        <div>
+          <label for="transaksiTanggal" class="block mb-1 font-semibold">Tanggal</label>
+          <input
+            id="transaksiTanggal"
+            type="date"
+            class="w-full rounded-md bg-blue-800 text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            required
+          />
+        </div>
+
+        <div>
+          <label for="transaksiCatatan" class="block mb-1 font-semibold">Catatan (Opsional)</label>
+          <textarea
+            id="transaksiCatatan"
+            rows="2"
+            placeholder="Catatan tambahan..."
+            class="w-full rounded-md bg-blue-800 text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"
+          ></textarea>
+        </div>
+
+        <button type="submit" class="w-full py-2 bg-gradient-to-r from-blue-600 to-blue-400 rounded-md font-semibold text-black hover:from-blue-700 hover:to-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300">
+          Simpan Transaksi
+        </button>
+      </form>
+    </section>
+
+    <section id="akun" class="menu-content hidden h-full overflow-y-auto">
+      <div class="mb-4 flex justify-between items-center">
+        <h2 class="text-xl font-semibold">Akun Wallet</h2>
+        <button id="addAkunBtn" class="px-3 py-1 bg-gradient-to-r from-blue-600 to-blue-400 rounded-md font-semibold text-black hover:from-blue-700 hover:to-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300">
+          <i class="fas fa-plus mr-1"></i>Tambah Akun
+        </button>
+      </div>
+      <div id="akunList" class="space-y-3">
+        <!-- Akun list inserted by JS -->
+      </div>
+    </section>
+
+    <section id="transfer" class="menu-content hidden h-full overflow-y-auto">
+      <form id="transferForm" class="space-y-4 bg-blue-900 bg-opacity-70 rounded-md p-4 shadow-lg">
+        <h2 class="text-xl font-semibold mb-2 text-center">Transfer Antar Akun</h2>
+
+        <div>
+          <label for="transferUserPengirim" class="block mb-1 font-semibold">User Pengirim</label>
+          <select id="transferUserPengirim" required class="w-full rounded-md bg-blue-800 text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <option value="malvin">Malvin</option>
+            <option value="yovita">Yovita</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="transferAkunPengirim" class="block mb-1 font-semibold">Akun Pengirim</label>
+          <select id="transferAkunPengirim" required class="w-full rounded-md bg-blue-800 text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <!-- Options updated dynamically -->
+          </select>
+        </div>
+
+        <div>
+          <label for="transferUserPenerima" class="block mb-1 font-semibold">User Penerima</label>
+          <select id="transferUserPenerima" required class="w-full rounded-md bg-blue-800 text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <option value="malvin">Malvin</option>
+            <option value="yovita">Yovita</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="transferAkunPenerima" class="block mb-1 font-semibold">Akun Penerima</label>
+          <select id="transferAkunPenerima" required class="w-full rounded-md bg-blue-800 text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <!-- Options updated dynamically -->
+          </select>
+        </div>
+
+        <div>
+          <label for="transferNominal" class="block mb-1 font-semibold">Nominal (Rp)</label>
+          <input
+            id="transferNominal"
+            type="text"
+            inputmode="numeric"
+            pattern="[0-9.,]*"
+            placeholder="0"
+            class="currency w-full rounded-md bg-blue-800 text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            required
+            autocomplete="off"
+          />
+        </div>
+
+        <div>
+          <label for="transferBiayaAdmin" class="block mb-1 font-semibold">Biaya Administrasi (Rp, Opsional)</label>
+          <input
+            id="transferBiayaAdmin"
+            type="text"
+            inputmode="numeric"
+            pattern="[0-9.,]*"
+            placeholder="0"
+            class="currency w-full rounded-md bg-blue-800 text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            autocomplete="off"
+          />
+        </div>
+
+        <div>
+          <label for="transferTanggal" class="block mb-1 font-semibold">Tanggal</label>
+          <input
+            id="transferTanggal"
+            type="date"
+            class="w-full rounded-md bg-blue-800 text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            required
+          />
+        </div>
+
+        <div>
+          <label for="transferCatatan" class="block mb-1 font-semibold">Catatan (Opsional)</label>
+          <textarea
+            id="transferCatatan"
+            rows="2"
+            placeholder="Catatan tambahan..."
+            class="w-full rounded-md bg-blue-800 text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"
+          ></textarea>
+        </div>
+
+        <button type="submit" class="w-full py-2 bg-gradient-to-r from-blue-600 to-blue-400 rounded-md font-semibold text-black hover:from-blue-700 hover:to-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300">
+          Simpan Transfer
+        </button>
+      </form>
+    </section>
+
+    <section id="history" class="menu-content hidden h-full overflow-y-auto">
+      <h2 class="text-xl font-semibold mb-3 text-center">History Transaksi</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-left text-sm">
+          <thead class="bg-blue-800 text-white sticky top-0 z-10">
+            <tr>
+              <th class="px-3 py-2">Tanggal</th>
+              <th class="px-3 py-2">User</th>
+              <th class="px-3 py-2">Tipe</th>
+              <th class="px-3 py-2">Sub Kategori</th>
+              <th class="px-3 py-2">Nominal (Rp)</th>
+              <th class="px-3 py-2">Akun</th>
+              <th class="px-3 py-2">Catatan</th>
+              <th class="px-3 py-2 text-center">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="historyTableBody" class="bg-blue-900">
+            <!-- Rows inserted by JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer with copyright -->
+  <footer class="text-center text-xs text-blue-400 py-2 select-none bg-gradient-to-r from-blue-800 via-blue-900 to-black">
+    &copy; 2024 MY Personal Finance - Malvin &amp; Yovita
+  </footer>
+</div>
+
+<!-- Modal for editing saldo akun -->
+<div id="modalEditSaldo" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden">
+  <div class="bg-blue-900 rounded-md p-6 w-11/12 max-w-md shadow-lg">
+    <h3 class="text-lg font-semibold mb-4 text-white">Edit Saldo Akun</h3>
+    <form id="editSaldoForm" class="space-y-4">
+      <div>
+        <label for="editSaldoNominal" class="block mb-1 font-semibold text-white">Saldo Baru (Rp)</label>
+        <input
+          id="editSaldoNominal"
+          type="text"
+          inputmode="numeric"
+          pattern="[0-9.,]*"
+          placeholder="0"
+          class="currency w-full rounded-md bg-blue-800 text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          required
+          autocomplete="off"
+        />
+      </div>
+      <div class="flex justify-end space-x-3">
+        <button type="button" id="cancelEditSaldoBtn" class="px-4 py-2 rounded-md bg-gray-700 text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500">Batal</button>
+        <button type="submit" class="px-4 py-2 rounded-md bg-gradient-to-r from-blue-600 to-blue-400 text-black font-semibold hover:from-blue-700 hover:to-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal for adding/editing akun -->
+<div id="modalAkun" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden">
+  <div class="bg-blue-900 rounded-md p-6 w-11/12 max-w-md shadow-lg">
+    <h3 id="modalAkunTitle" class="text-lg font-semibold mb-4 text-white">Tambah Akun</h3>
+    <form id="akunForm" class="space-y-4">
+      <div>
+        <label for="akunUser" class="block mb-1 font-semibold text-white">User</label>
+        <select id="akunUser" required class="w-full rounded-md bg-blue-800 text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+          <option value="malvin">Malvin</option>
+          <option value="yovita">Yovita</option>
+        </select>
+      </div>
+      <div>
+        <label for="akunName" class="block mb-1 font-semibold text-white">Nama Akun</label>
+        <input
+          id="akunName"
+          type="text"
+          placeholder="Nama akun wallet"
+          class="w-full rounded-md bg-blue-800 text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          required
+          autocomplete="off"
+        />
+      </div>
+      <div>
+        <label for="akunSaldo" class="block mb-1 font-semibold text-white">Saldo Awal (Rp)</label>
+        <input
+          id="akunSaldo"
+          type="text"
+          inputmode="numeric"
+          pattern="[0-9.,]*"
+          placeholder="0"
+          class="currency w-full rounded-md bg-blue-800 text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          required
+          autocomplete="off"
+        />
+      </div>
+      <div class="flex justify-end space-x-3">
+        <button type="button" id="cancelAkunBtn" class="px-4 py-2 rounded-md bg-gray-700 text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500">Batal</button>
+        <button type="submit" class="px-4 py-2 rounded-md bg-gradient-to-r from-blue-600 to-blue-400 text-black font-semibold hover:from-blue-700 hover:to-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal for editing transaction -->
+<div id="modalEditTransaction" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden">
+  <div class="bg-blue-900 rounded-md p-6 w-11/12 max-w-md shadow-lg overflow-y-auto max-h-[90vh]">
+    <h3 class="text-lg font-semibold mb-4 text-white">Edit Transaksi</h3>
+    <form id="editTransactionForm" class="space-y-4">
+      <div>
+        <label for="editTransaksiUser" class="block mb-1 font-semibold text-white">User</label>
+        <select id="editTransaksiUser" required class="w-full rounded-md bg-blue-800 text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+          <option value="malvin">Malvin</option>
+          <option value="yovita">Yovita</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="editTransaksiType" class="block mb-1 font-semibold text-white">Tipe Transaksi</label>
+        <select id="editTransaksiType" required class="w-full rounded-md bg-blue-800 text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+          <option value="pendapatan">Pendapatan</option>
+          <option value="pengeluaran">Pengeluaran</option>
+          <option value="transfer">Transfer</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="editTransaksiSubCategory" class="block mb-1 font-semibold text-white">Sub Kategori</label>
+        <select id="editTransaksiSubCategory" required class="w-full rounded-md bg-blue-800 text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+          <!-- Options updated dynamically -->
+        </select>
+      </div>
+
+      <div>
+        <label for="editTransaksiNominal" class="block mb-1 font-semibold text-white">Nominal (Rp)</label>
+        <input
+          id="editTransaksiNominal"
+          type="text"
+          inputmode="numeric"
+          pattern="[0-9.,]*"
+          placeholder="0"
+          class="currency w-full rounded-md bg-blue-800 text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          required
+          autocomplete="off"
+        />
+      </div>
+
+      <div>
+        <label for="editTransaksiTanggal" class="block mb-1 font-semibold text-white">Tanggal</label>
+        <input
+          id="editTransaksiTanggal"
+          type="date"
+          class="w-full rounded-md bg-blue-800 text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          required
+        />
+      </div>
+
+      <div>
+        <label for="editTransaksiCatatan" class="block mb-1 font-semibold text-white">Catatan (Opsional)</label>
+        <textarea
+          id="editTransaksiCatatan"
+          rows="2"
+          placeholder="Catatan tambahan..."
+          class="w-full rounded-md bg-blue-800 text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"
+        ></textarea>
+      </div>
+
+      <div class="flex justify-end space-x-3">
+        <button type="button" id="cancelEditTransactionBtn" class="px-4 py-2 rounded-md bg-gray-700 text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500">Batal</button>
+        <button type="submit" class="px-4 py-2 rounded-md bg-gradient-to-r from-blue-600 to-blue-400 text-black font-semibold hover:from-blue-700 hover:to-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script>
+  (() => {
+    // Constants
+    const USERS = {
+      malvin: { name: "Malvin", colorFrom: "from-blue-600", colorTo: "to-blue-400" },
+      yovita: { name: "Yovita", colorFrom: "from-gray-700", colorTo: "to-gray-500" },
+    };
+    const TRANSAKSI_SUBCATEGORIES = {
+      pendapatan: [
+        { value: "gaji", label: "Gaji" },
+        { value: "bonus", label: "Bonus" },
+        { value: "klaim_kesehatan", label: "Klaim Kesehatan" },
+        { value: "pendapatan_lain", label: "Pendapatan Lain-lain" },
+      ],
+      pengeluaran: [
+        { value: "kebutuhan", label: "Kebutuhan" },
+        { value: "keinginan", label: "Keinginan" },
+        { value: "zoey", label: "Zoey" },
+      ],
+      transfer: [
+        { value: "transfer", label: "Transfer" },
+      ],
+    };
+
+    // LocalStorage keys
+    const STORAGE_KEYS = {
+      akun: "myfinance_akun",
+      transaksi: "myfinance_transaksi",
+      transfer: "myfinance_transfer",
+    };
+
+    // State
+    let currentUser = "malvin";
+    let akunList = [];
+    let transaksiList = [];
+    let transferList = [];
+
+    // Editing states
+    let editingSaldoAkunId = null;
+    let editingAkunId = null;
+    let editingTransactionId = null;
+
+    // Elements
+    const userMalvinBtn = document.getElementById("userMalvinBtn");
+    const userYovitaBtn = document.getElementById("userYovitaBtn");
+    const currentUserIndicator = document.getElementById("currentUserIndicator");
+    const menuTabs = document.querySelectorAll(".menu-tab");
+    const menuContents = document.querySelectorAll(".menu-content");
+
+    // Dashboard elements
+    const dashboardSection = document.getElementById("dashboard");
+    const dashboardUserBtns = dashboardSection.querySelectorAll(".dashboard-user-btn");
+    const dashboardRangeSelect = document.getElementById("dashboardRange");
+    const dashboardCategorySelect = document.getElementById("dashboardCategory");
+    const dashboardSummary = document.getElementById("dashboardSummary");
+    const dashboardChartCanvas = document.getElementById("dashboardChart");
+    const downloadReportBtn = document.getElementById("downloadReportBtn");
+
+    // Transaksi elements
+    const transaksiForm = document.getElementById("transaksiForm");
+    const transaksiUserSelect = document.getElementById("transaksiUser");
+    const transaksiTypeSelect = document.getElementById("transaksiType");
+    const transaksiSubCategorySelect = document.getElementById("transaksiSubCategory");
+    const transaksiNominalInput = document.getElementById("transaksiNominal");
+    const transaksiTanggalInput = document.getElementById("transaksiTanggal");
+    const transaksiCatatanInput = document.getElementById("transaksiCatatan");
+
+    // Akun elements
+    const akunListContainer = document.getElementById("akunList");
+    const addAkunBtn = document.getElementById("addAkunBtn");
+    const modalAkun = document.getElementById("modalAkun");
+    const modalAkunTitle = document.getElementById("modalAkunTitle");
+    const akunForm = document.getElementById("akunForm");
+    const akunUserSelect = document.getElementById("akunUser");
+    const akunNameInput = document.getElementById("akunName");
+    const akunSaldoInput = document.getElementById("akunSaldo");
+    const cancelAkunBtn = document.getElementById("cancelAkunBtn");
+
+    // Transfer elements
+    const transferForm = document.getElementById("transferForm");
+    const transferUserPengirimSelect = document.getElementById("transferUserPengirim");
+    const transferAkunPengirimSelect = document.getElementById("transferAkunPengirim");
+    const transferUserPenerimaSelect = document.getElementById("transferUserPenerima");
+    const transferAkunPenerimaSelect = document.getElementById("transferAkunPenerima");
+    const transferNominalInput = document.getElementById("transferNominal");
+    const transferBiayaAdminInput = document.getElementById("transferBiayaAdmin");
+    const transferTanggalInput = document.getElementById("transferTanggal");
+    const transferCatatanInput = document.getElementById("transferCatatan");
+
+    // History elements
+    const historyTableBody = document.getElementById("historyTableBody");
+
+    // Modal Edit Saldo
+    const modalEditSaldo = document.getElementById("modalEditSaldo");
+    const editSaldoForm = document.getElementById("editSaldoForm");
+    const editSaldoNominalInput = document.getElementById("editSaldoNominal");
+    const cancelEditSaldoBtn = document.getElementById("cancelEditSaldoBtn");
+
+    // Modal Edit Transaction
+    const modalEditTransaction = document.getElementById("modalEditTransaction");
+    const editTransactionForm = document.getElementById("editTransactionForm");
+    const editTransaksiUserSelect = document.getElementById("editTransaksiUser");
+    const editTransaksiTypeSelect = document.getElementById("editTransaksiType");
+    const editTransaksiSubCategorySelect = document.getElementById("editTransaksiSubCategory");
+    const editTransaksiNominalInput = document.getElementById("editTransaksiNominal");
+    const editTransaksiTanggalInput = document.getElementById("editTransaksiTanggal");
+    const editTransaksiCatatanInput = document.getElementById("editTransaksiCatatan");
+    const cancelEditTransactionBtn = document.getElementById("cancelEditTransactionBtn");
+
+    // Chart instance
+    let dashboardChart = null;
+
+    // Utility functions
+    function formatRp(value) {
+      if (typeof value === "number") {
+        value = value.toFixed(0);
+      }
+      return "Rp " + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+    function parseRp(value) {
+      if (!value) return 0;
+      return parseInt(value.toString().replace(/[Rp\s.]/g, "")) || 0;
+    }
+    function formatInputCurrency(input) {
+      let val = input.value;
+      let cursorPos = input.selectionStart;
+      let originalLength = val.length;
+
+      val = val.replace(/[^\d]/g, "");
+      if (val === "") {
+        input.value = "";
+        return;
+      }
+      let formatted = "";
+      let len = val.length;
+      for (let i = 0; i < len; i++) {
+        if ((len - i) % 3 === 0 && i !== 0) {
+          formatted += ".";
+        }
+        formatted += val[i];
+      }
+      // Actually better to use regex for thousands separator:
+      formatted = val.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      input.value = formatted;
+
+      // Adjust cursor position
+      let newLength = formatted.length;
+      cursorPos = cursorPos + (newLength - originalLength);
+      input.setSelectionRange(cursorPos, cursorPos);
+    }
+
+    // Save and load data from localStorage
+    function saveData() {
+      localStorage.setItem(STORAGE_KEYS.akun, JSON.stringify(akunList));
+      localStorage.setItem(STORAGE_KEYS.transaksi, JSON.stringify(transaksiList));
+      localStorage.setItem(STORAGE_KEYS.transfer, JSON.stringify(transferList));
+    }
+    function loadData() {
+      const akunData = localStorage.getItem(STORAGE_KEYS.akun);
+      const transaksiData = localStorage.getItem(STORAGE_KEYS.transaksi);
+      const transferData = localStorage.getItem(STORAGE_KEYS.transfer);
+      akunList = akunData ? JSON.parse(akunData) : [];
+      transaksiList = transaksiData ? JSON.parse(transaksiData) : [];
+      transferList = transferData ? JSON.parse(transferData) : [];
+    }
+
+    // Generate unique ID
+    function generateId() {
+      return (
+        Date.now().toString(36) +
+        Math.random().toString(36).substr(2, 5)
+      );
+    }
+
+    // Update current user UI
+    function updateCurrentUserUI() {
+      currentUserIndicator.textContent = `User aktif: ${USERS[currentUser].name}`;
+      if (currentUser === "malvin") {
+        userMalvinBtn.classList.add("bg-gradient-to-r", "from-blue-600", "to-blue-400");
+        userMalvinBtn.classList.remove("bg-gradient-to-r", "from-gray-700", "to-gray-500");
+        userYovitaBtn.classList.add("bg-gradient-to-r", "from-gray-700", "to-gray-500");
+        userYovitaBtn.classList.remove("bg-gradient-to-r", "from-blue-600", "to-blue-400");
+      } else {
+        userYovitaBtn.classList.add("bg-gradient-to-r", "from-blue-600", "to-blue-400");
+        userYovitaBtn.classList.remove("bg-gradient-to-r", "from-gray-700", "to-gray-500");
+        userMalvinBtn.classList.add("bg-gradient-to-r", "from-gray-700", "to-gray-500");
+        userMalvinBtn.classList.remove("bg-gradient-to-r", "from-blue-600", "to-blue-400");
+      }
+    }
+
+    // Switch menu tab
+    function switchMenu(menu) {
+      menuTabs.forEach((btn) => {
+        if (btn.dataset.menu === menu) {
+          btn.classList.add("text-white");
+          btn.classList.remove("text-blue-400");
+        } else {
+          btn.classList.remove("text-white");
+          btn.classList.add("text-blue-400");
+        }
+      });
+      menuContents.forEach((section) => {
+        if (section.id === menu) {
+          section.classList.remove("hidden");
+        } else {
+          section.classList.add("hidden");
+        }
+      });
+    }
+
+    // Update transaksi subcategory options based on type
+    function updateTransaksiSubCategoryOptions(selectElement, type) {
+      selectElement.innerHTML = "";
+      if (!type || !TRANSAKSI_SUBCATEGORIES[type]) return;
+      TRANSAKSI_SUBCATEGORIES[type].forEach((cat) => {
+        const option = document.createElement("option");
+        option.value = cat.value;
+        option.textContent = cat.label;
+        selectElement.appendChild(option);
+      });
+    }
+
+    // Render akun list
+    function renderAkunList() {
+      akunListContainer.innerHTML = "";
+      if (akunList.length === 0) {
+        akunListContainer.innerHTML = `<p class="text-center text-blue-300">Belum ada akun wallet. Tambahkan akun baru.</p>`;
+        return;
+      }
+      akunList.forEach((akun) => {
+        const userColorFrom = USERS[akun.user]?.colorFrom || "from-gray-700";
+        const userColorTo = USERS[akun.user]?.colorTo || "to-gray-500";
+        const card = document.createElement("div");
+        card.className = `bg-gradient-to-r ${userColorFrom} ${userColorTo} rounded-md p-3 flex justify-between items-center shadow-md`;
+        card.innerHTML = `
+          <div>
+            <h3 class="font-semibold text-lg">${akun.name}</h3>
+            <p class="text-sm">User: ${USERS[akun.user]?.name || akun.user}</p>
+            <p class="text-sm font-mono">${formatRp(akun.saldo)}</p>
+          </div>
+          <div class="flex space-x-2">
+            <button aria-label="Edit saldo akun ${akun.name}" class="edit-saldo-btn px-3 py-1 rounded-md bg-blue-800 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 text-white font-semibold" data-id="${akun.id}"><i class="fas fa-edit"></i></button>
+            <button aria-label="Edit akun ${akun.name}" class="edit-akun-btn px-3 py-1 rounded-md bg-green-700 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 text-white font-semibold" data-id="${akun.id}"><i class="fas fa-pen"></i></button>
+            <button aria-label="Hapus akun ${akun.name}" class="delete-akun-btn px-3 py-1 rounded-md bg-red-700 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 text-white font-semibold" data-id="${akun.id}"><i class="fas fa-trash"></i></button>
+          </div>
+        `;
+        akunListContainer.appendChild(card);
+      });
+    }
+
+    // Render akun options for select inputs
+    function renderAkunOptions(selectElement, userFilter = null) {
+      selectElement.innerHTML = "";
+      let filteredAkun = akunList;
+      if (userFilter) {
+        filteredAkun = akunList.filter((a) => a.user === userFilter);
+      }
+      if (filteredAkun.length === 0) {
+        const option = document.createElement("option");
+        option.value = "";
+        option.textContent = "Tidak ada akun";
+        selectElement.appendChild(option);
+        return;
+      }
+      filteredAkun.forEach((akun) => {
+        const option = document.createElement("option");
+        option.value = akun.id;
+        option.textContent = `${akun.name} (${USERS[akun.user]?.name || akun.user})`;
+        selectElement.appendChild(option);
+      });
+    }
+
+    // Render history table
+    function renderHistoryTable() {
+      historyTableBody.innerHTML = "";
+      // Combine transaksi and transfer for history
+      // For transfer, show as tipe "transfer" and subkategori "transfer"
+      // Sort by tanggal descending
+      const combined = [];
+
+      transaksiList.forEach((t) => {
+        combined.push({
+          id: t.id,
+          tanggal: t.tanggal,
+          user: t.user,
+          tipe: t.type,
+          subKategori: t.subCategory,
+          nominal: t.nominal,
+          akunId: t.akunId,
+          catatan: t.catatan || "",
+          isTransfer: false,
+        });
+      });
+      transferList.forEach((tr) => {
+        combined.push({
+          id: tr.id,
+          tanggal: tr.tanggal,
+          user: tr.userPengirim,
+          tipe: "transfer",
+          subKategori: "transfer",
+          nominal: tr.nominal,
+          akunId: tr.akunPengirimId,
+          catatan: tr.catatan || "",
+          isTransfer: true,
+          userPenerima: tr.userPenerima,
+          akunPenerimaId: tr.akunPenerimaId,
+          biayaAdmin: tr.biayaAdmin,
+        });
+      });
+
+      combined.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
+
+      if (combined.length === 0) {
+        historyTableBody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-blue-300">Belum ada transaksi.</td></tr>`;
+        return;
+      }
+
+      combined.forEach((item) => {
+        const akun = akunList.find((a) => a.id === item.akunId);
+        const akunName = akun ? akun.name : "-";
+        const userName = USERS[item.user]?.name || item.user;
+        const nominalFormatted = formatRp(item.nominal);
+        const tanggalFormatted = item.tanggal;
+        const catatan = item.catatan || "";
+        const tr = document.createElement("tr");
+        tr.className = "border-b border-blue-700 hover:bg-blue-800 cursor-pointer";
+        tr.innerHTML = `
+          <td class="px-3 py-2 align-top">${tanggalFormatted}</td>
+          <td class="px-3 py-2 align-top">${userName}</td>
+          <td class="px-3 py-2 align-top capitalize">${item.tipe}</td>
+          <td class="px-3 py-2 align-top">${TRANSAKSI_SUBCATEGORIES[item.tipe]?.find(c => c.value === item.subKategori)?.label || (item.subKategori === "transfer" ? "Transfer" : item.subKategori)}</td>
+          <td class="px-3 py-2 align-top font-mono">${nominalFormatted}</td>
+          <td class="px-3 py-2 align-top">${akunName}</td>
+          <td class="px-3 py-2 align-top">${catatan}</td>
+          <td class="px-3 py-2 align-top text-center">
+            <button aria-label="Edit transaksi" class="edit-transaction-btn text-blue-400 hover:text-white focus:outline-none" data-id="${item.id}" data-is-transfer="${item.isTransfer}">
+              <i class="fas fa-edit"></i>
+            </button>
+          </td>
+        `;
+        historyTableBody.appendChild(tr);
+      });
+    }
+
+    // Calculate saldo per akun
+    function calculateSaldoAkun(akunId) {
+      const akun = akunList.find((a) => a.id === akunId);
+      if (!akun) return 0;
+      let saldo = akun.saldoAwal || 0;
+
+      // Add pendapatan transaksi for this akun
+      transaksiList.forEach((t) => {
+        if (t.akunId === akunId) {
+          if (t.type === "pendapatan") {
+            saldo += t.nominal;
+          } else if (t.type === "pengeluaran") {
+            saldo -= t.nominal;
+          }
+        }
+      });
+
+      // Add transfer penerima saldo
+      transferList.forEach((tr) => {
+        if (tr.akunPenerimaId === akunId) {
+          saldo += tr.nominal;
+        }
+        if (tr.akunPengirimId === akunId) {
+          saldo -= tr.nominal;
+          if (tr.biayaAdmin) saldo -= tr.biayaAdmin;
+        }
+      });
+
+      return saldo;
+    }
+
+    // Update all akun saldo in state
+    function updateAllAkunSaldo() {
+      akunList.forEach((akun) => {
+        akun.saldo = calculateSaldoAkun(akun.id);
+      });
+    }
+
+    // Update dashboard summary and chart
+    function updateDashboard() {
+      const selectedUser = dashboardSection.querySelector(".dashboard-user-btn.text-white")?.dataset.dashboardUser || "malvin";
+      const range = dashboardRangeSelect.value;
+      const category = dashboardCategorySelect.value;
+
+      // Filter transaksi and transfer by user and category
+      let filteredTransaksi = [];
+      let filteredTransfer = [];
+
+      if (selectedUser === "gabungan") {
+        filteredTransaksi = transaksiList.slice();
+        filteredTransfer = transferList.slice();
+      } else {
+        filteredTransaksi = transaksiList.filter((t) => t.user === selectedUser);
+        filteredTransfer = transferList.filter((tr) => tr.userPengirim === selectedUser || tr.userPenerima === selectedUser);
+      }
+
+      if (category === "pendapatan") {
+        filteredTransaksi = filteredTransaksi.filter((t) => t.type === "pendapatan");
+        filteredTransfer = [];
+      } else if (category === "pengeluaran") {
+        filteredTransaksi = filteredTransaksi.filter((t) => t.type === "pengeluaran");
+        filteredTransfer = [];
+      } else if (category === "transfer") {
+        filteredTransaksi = [];
+        filteredTransfer = filteredTransfer.slice();
+      }
+
+      // Aggregate data for summary
+      let totalPendapatan = 0;
+      let totalPengeluaran = 0;
+      let totalTransfer = 0;
+
+      filteredTransaksi.forEach((t) => {
+        if (t.type === "pendapatan") totalPendapatan += t.nominal;
+        else if (t.type === "pengeluaran") totalPengeluaran += t.nominal;
+      });
+      filteredTransfer.forEach((tr) => {
+        if (selectedUser === "gabungan") {
+          totalTransfer += tr.nominal;
+        } else if (tr.userPengirim === selectedUser) {
+          totalPengeluaran += tr.nominal + (tr.biayaAdmin || 0);
+        } else if (tr.userPenerima === selectedUser) {
+          totalPendapatan += tr.nominal;
+        }
+      });
+
+      // Summary cards
+      dashboardSummary.innerHTML = `
+        <div class="bg-gradient-to-r from-green-600 to-green-400 rounded-md p-3 shadow-md">
+          <h3 class="font-semibold">Total Pendapatan</h3>
+          <p class="text-xl font-mono">${formatRp(totalPendapatan)}</p>
+        </div>
+        <div class="bg-gradient-to-r from-red-600 to-red-400 rounded-md p-3 shadow-md">
+          <h3 class="font-semibold">Total Pengeluaran</h3>
+          <p class="text-xl font-mono">${formatRp(totalPengeluaran)}</p>
+        </div>
+        <div class="bg-gradient-to-r from-yellow-600 to-yellow-400 rounded-md p-3 shadow-md">
+          <h3 class="font-semibold">Total Transfer</h3>
+          <p class="text-xl font-mono">${formatRp(totalTransfer)}</p>
+        </div>
+      `;
+
+      // Prepare data for chart
+      // Group by date depending on range (daily, weekly, monthly, yearly)
+      // For simplicity, group by date string keys
+      const dateGroups = {};
+
+      function getGroupKey(dateStr) {
+        const d = new Date(dateStr);
+        if (range === "daily") {
+          return dateStr;
+        } else if (range === "weekly") {
+          // ISO week number + year
+          const onejan = new Date(d.getFullYear(), 0, 1);
+          const dayOfYear = Math.floor((d - onejan) / (24 * 60 * 60 * 1000)) + 1;
+          const weekNum = Math.ceil(dayOfYear / 7);
+          return `${d.getFullYear()}-W${weekNum}`;
+        } else if (range === "monthly") {
+          return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, "0")}`;
+        } else if (range === "yearly") {
+          return `${d.getFullYear()}`;
+        }
+        return dateStr;
+      }
+
+      // Initialize groups
+      filteredTransaksi.forEach((t) => {
+        const key = getGroupKey(t.tanggal);
+        if (!dateGroups[key]) {
+          dateGroups[key] = { pendapatan: 0, pengeluaran: 0, transfer: 0 };
+        }
+        if (t.type === "pendapatan") dateGroups[key].pendapatan += t.nominal;
+        else if (t.type === "pengeluaran") dateGroups[key].pengeluaran += t.nominal;
+      });
+      filteredTransfer.forEach((tr) => {
+        const key = getGroupKey(tr.tanggal);
+        if (!dateGroups[key]) {
+          dateGroups[key] = { pendapatan: 0, pengeluaran: 0, transfer: 0 };
+        }
+        dateGroups[key].transfer += tr.nominal;
+      });
+
+      // Sort keys ascending
+      const sortedKeys = Object.keys(dateGroups).sort();
+
+      // Prepare datasets
+      const labels = sortedKeys;
+      const pendapatanData = [];
+      const pengeluaranData = [];
+      const transferData = [];
+
+      sortedKeys.forEach((key) => {
+        pendapatanData.push(dateGroups[key].pendapatan);
+        pengeluaranData.push(dateGroups[key].pengeluaran);
+        transferData.push(dateGroups[key].transfer);
+      });
+
+      // Destroy old chart if exists
+      if (dashboardChart) {
+        dashboardChart.destroy();
+      }
+
+      dashboardChart = new Chart(dashboardChartCanvas, {
+        type: "bar",
+        data: {
+          labels,
+          datasets: [
+            {
+              label: "Pendapatan",
+              data: pendapatanData,
+              backgroundColor: "rgba(34,197,94,0.7)", // green
+            },
+            {
+              label: "Pengeluaran",
+              data: pengeluaranData,
+              backgroundColor: "rgba(239,68,68,0.7)", // red
+            },
+            {
+              label: "Transfer",
+              data: transferData,
+              backgroundColor: "rgba(234,179,8,0.7)", // yellow
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function (value) {
+                  return "Rp " + value.toLocaleString("id-ID");
+                },
+              },
+            },
+          },
+          plugins: {
+            legend: {
+              labels: {
+                color: "white",
+              },
+            },
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  return context.dataset.label + ": Rp " + context.parsed.y.toLocaleString("id-ID");
+                },
+              },
+            },
+          },
+        },
+      });
+    }
+
+    // Download laporan excel
+    function downloadLaporanExcel() {
+      // Prepare data for excel: summary + transaksi + transfer
+      const wb = XLSX.utils.book_new();
+
+      // Summary sheet
+      const summaryData = [
+        ["User", currentUserIndicator.textContent.replace("User aktif: ", "")],
+        ["Tanggal Laporan", new Date().toLocaleDateString("id-ID")],
+      ];
+      const wsSummary = XLSX.utils.aoa_to_sheet(summaryData);
+      XLSX.utils.book_append_sheet(wb, wsSummary, "Summary");
+
+      // Transaksi sheet
+      const transaksiSheetData = [
+        ["ID", "Tanggal", "User", "Tipe", "Sub Kategori", "Nominal (Rp)", "Akun", "Catatan"],
+      ];
+      transaksiList.forEach((t) => {
+        const akun = akunList.find((a) => a.id === t.akunId);
+        transaksiSheetData.push([
+          t.id,
+          t.tanggal,
+          USERS[t.user]?.name || t.user,
+          t.type,
+          TRANSAKSI_SUBCATEGORIES[t.type]?.find(c => c.value === t.subCategory)?.label || t.subCategory,
+          t.nominal,
+          akun ? akun.name : "-",
+          t.catatan || "",
+        ]);
+      });
+      const wsTransaksi = XLSX.utils.aoa_to_sheet(transaksiSheetData);
+      XLSX.utils.book_append_sheet(wb, wsTransaksi, "Transaksi");
+
+      // Transfer sheet
+      const transferSheetData = [
+        ["ID", "Tanggal", "User Pengirim", "Akun Pengirim", "User Penerima", "Akun Penerima", "Nominal (Rp)", "Biaya Admin (Rp)", "Catatan"],
+      ];
+      transferList.forEach((tr) => {
+        const akunPengirim = akunList.find((a) => a.id === tr.akunPengirimId);
+        const akunPenerima = akunList.find((a) => a.id === tr.akunPenerimaId);
+        transferSheetData.push([
+          tr.id,
+          tr.tanggal,
+          USERS[tr.userPengirim]?.name || tr.userPengirim,
+          akunPengirim ? akunPengirim.name : "-",
+          USERS[tr.userPenerima]?.name || tr.userPenerima,
+          akunPenerima ? akunPenerima.name : "-",
+          tr.nominal,
+          tr.biayaAdmin || 0,
+          tr.catatan || "",
+        ]);
+      });
+      const wsTransfer = XLSX.utils.aoa_to_sheet(transferSheetData);
+      XLSX.utils.book_append_sheet(wb, wsTransfer, "Transfer");
+
+      // Save file
+      XLSX.writeFile(wb, `Laporan_MYPersonalFinance_${new Date().toISOString().slice(0,10)}.xlsx`);
+    }
+
+    // Event handlers
+    userMalvinBtn.addEventListener("click", () => {
+      currentUser = "malvin";
+      updateCurrentUserUI();
+    });
+    userYovitaBtn.addEventListener("click", () => {
+      currentUser = "yovita";
+      updateCurrentUserUI();
+    });
+
+    menuTabs.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        switchMenu(btn.dataset.menu);
+        if (btn.dataset.menu === "dashboard") {
+          updateDashboard();
+        } else if (btn.dataset.menu === "akun") {
+          renderAkunList();
+        } else if (btn.dataset.menu === "history") {
+          renderHistoryTable();
+        }
+      });
+    });
+
+    transaksiTypeSelect.addEventListener("change", () => {
+      updateTransaksiSubCategoryOptions(transaksiSubCategorySelect, transaksiTypeSelect.value);
+    });
+
+    transaksiNominalInput.addEventListener("input", () => {
+      formatInputCurrency(transaksiNominalInput);
+    });
+
+    transferNominalInput.addEventListener("input", () => {
+      formatInputCurrency(transferNominalInput);
+    });
+    transferBiayaAdminInput.addEventListener("input", () => {
+      formatInputCurrency(transferBiayaAdminInput);
+    });
+
+    akunSaldoInput.addEventListener("input", () => {
+      formatInputCurrency(akunSaldoInput);
+    });
+
+    editSaldoNominalInput.addEventListener("input", () => {
+      formatInputCurrency(editSaldoNominalInput);
+    });
+
+    editTransactionForm.querySelectorAll("input.currency, textarea").forEach((el) => {
+      el.addEventListener("input", () => {
+        if (el.classList.contains("currency")) {
+          formatInputCurrency(el);
+        }
+      });
+    });
+
+    // Transaksi form submit
+    transaksiForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const user = transaksiUserSelect.value;
+      const type = transaksiTypeSelect.value;
+      const subCategory = transaksiSubCategorySelect.value;
+      const nominal = parseRp(transaksiNominalInput.value);
+      const tanggal = transaksiTanggalInput.value;
+      const catatan = transaksiCatatanInput.value.trim();
+
+      if (!user || !type || !subCategory || !tanggal || nominal <= 0) {
+        alert("Mohon isi semua kolom dengan benar.");
+        return;
+      }
+
+      // Select akun for this user - pick first akun by default
+      const akunUser = akunList.filter((a) => a.user === user);
+      if (akunUser.length === 0) {
+        alert("User ini belum memiliki akun wallet. Silakan tambahkan akun terlebih dahulu.");
+        return;
+      }
+      const akunId = akunUser[0].id;
+
+      // Add transaksi
+      transaksiList.push({
+        id: generateId(),
+        user,
+        type,
+        subCategory,
+        nominal,
+        tanggal,
+        catatan,
+        akunId,
+      });
+
+      updateAllAkunSaldo();
+      saveData();
+      transaksiForm.reset();
+      updateTransaksiSubCategoryOptions(transaksiSubCategorySelect, transaksiTypeSelect.value);
+      alert("Transaksi berhasil disimpan.");
+      if (document.querySelector(".menu-tab.text-white").dataset.menu === "history") {
+        renderHistoryTable();
+      }
+      if (document.querySelector(".menu-tab.text-white").dataset.menu === "dashboard") {
+        updateDashboard();
+      }
+    });
+
+    // Add akun button
+    addAkunBtn.addEventListener("click", () => {
+      editingAkunId = null;
+      modalAkunTitle.textContent = "Tambah Akun";
+      akunForm.reset();
+      akunUserSelect.value = currentUser;
+      akunSaldoInput.value = "";
+      modalAkun.classList.remove("hidden");
+      akunNameInput.focus();
+    });
+
+    // Cancel akun modal
+    cancelAkunBtn.addEventListener("click", () => {
+      modalAkun.classList.add("hidden");
+    });
+
+    // Akun form submit
+    akunForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const user = akunUserSelect.value;
+      const name = akunNameInput.value.trim();
+      const saldoAwal = parseRp(akunSaldoInput.value);
+
+      if (!user || !name || saldoAwal < 0) {
+        alert("Mohon isi semua kolom dengan benar.");
+        return;
+      }
+
+      if (editingAkunId) {
+        // Edit existing akun
+        const akun = akunList.find((a) => a.id === editingAkunId);
+        if (akun) {
+          akun.user = user;
+          akun.name = name;
+          akun.saldoAwal = saldoAwal;
+          updateAllAkunSaldo();
+          saveData();
+          renderAkunList();
+          modalAkun.classList.add("hidden");
+          alert("Akun berhasil diperbarui.");
+        }
+      } else {
+        // Add new akun
+        akunList.push({
+          id: generateId(),
+          user,
+          name,
+          saldoAwal,
+          saldo: saldoAwal,
+        });
+        saveData();
+        renderAkunList();
+        modalAkun.classList.add("hidden");
+        alert("Akun berhasil ditambahkan.");
+      }
+      // Update akun selects in transfer form
+      updateTransferAkunOptions();
+    });
+
+    // Edit saldo button click (delegated)
+    akunListContainer.addEventListener("click", (e) => {
+      if (e.target.closest(".edit-saldo-btn")) {
+        const id = e.target.closest(".edit-saldo-btn").dataset.id;
+        editingSaldoAkunId = id;
+        const akun = akunList.find((a) => a.id === id);
+        if (!akun) return;
+        editSaldoNominalInput.value = akun.saldo.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        modalEditSaldo.classList.remove("hidden");
+        editSaldoNominalInput.focus();
+      } else if (e.target.closest(".edit-akun-btn")) {
+        const id = e.target.closest(".edit-akun-btn").dataset.id;
+        editingAkunId = id;
+        const akun = akunList.find((a) => a.id === id);
+        if (!akun) return;
+        modalAkunTitle.textContent = "Edit Akun";
+        akunUserSelect.value = akun.user;
+        akunNameInput.value = akun.name;
+        akunSaldoInput.value = akun.saldoAwal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        modalAkun.classList.remove("hidden");
+        akunNameInput.focus();
+      } else if (e.target.closest(".delete-akun-btn")) {
+        const id = e.target.closest(".delete-akun-btn").dataset.id;
+        if (confirm("Yakin ingin menghapus akun ini? Semua transaksi terkait juga akan dihapus.")) {
+          // Remove akun
+          akunList = akunList.filter((a) => a.id !== id);
+          // Remove transaksi related to akun
+          transaksiList = transaksiList.filter((t) => t.akunId !== id);
+          // Remove transfer related to akun
+          transferList = transferList.filter((tr) => tr.akunPengirimId !== id && tr.akunPenerimaId !== id);
+          updateAllAkunSaldo();
+          saveData();
+          renderAkunList();
+          renderHistoryTable();
+          updateDashboard();
+          updateTransferAkunOptions();
+          alert("Akun dan transaksi terkait berhasil dihapus.");
+        }
+      }
+    });
+
+    // Cancel edit saldo modal
+    cancelEditSaldoBtn.addEventListener("click", () => {
+      modalEditSaldo.classList.add("hidden");
+      editingSaldoAkunId = null;
+    });
+
+    // Edit saldo form submit
+    editSaldoForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (!editingSaldoAkunId) return;
+      const newSaldo = parseRp(editSaldoNominalInput.value);
+      if (newSaldo < 0) {
+        alert("Saldo tidak boleh negatif.");
+        return;
+      }
+      const akun = akunList.find((a) => a.id === editingSaldoAkunId);
+      if (!akun) return;
+      // Update saldoAwal to newSaldo minus all transaksi and transfer effects
+      // Calculate current saldo without saldoAwal
+      let saldoWithoutAwal = 0;
+      transaksiList.forEach((t) => {
+        if (t.akunId === akun.id) {
+          if (t.type === "pendapatan") saldoWithoutAwal += t.nominal;
+          else if (t.type === "pengeluaran") saldoWithoutAwal -= t.nominal;
+        }
+      });
+      transferList.forEach((tr) => {
+        if (tr.akunPenerimaId === akun.id) saldoWithoutAwal += tr.nominal;
+        if (tr.akunPengirimId === akun.id) saldoWithoutAwal -= tr.nominal + (tr.biayaAdmin || 0);
+      });
+      akun.saldoAwal = newSaldo - saldoWithoutAwal;
+      if (akun.saldoAwal < 0) {
+        alert("Saldo awal tidak boleh negatif setelah penyesuaian. Periksa transaksi Anda.");
+        return;
+      }
+      updateAllAkunSaldo();
+      saveData();
+      renderAkunList();
+      modalEditSaldo.classList.add("hidden");
+      editingSaldoAkunId = null;
+      alert("Saldo akun berhasil diperbarui.");
+      updateDashboard();
+    });
+
+    // Update transfer akun options based on user select
+    function updateTransferAkunOptions() {
+      renderAkunOptions(transferAkunPengirimSelect, transferUserPengirimSelect.value);
+      renderAkunOptions(transferAkunPenerimaSelect, transferUserPenerimaSelect.value);
+    }
+
+    transferUserPengirimSelect.addEventListener("change", () => {
+      updateTransferAkunOptions();
+    });
+    transferUserPenerimaSelect.addEventListener("change", () => {
+      updateTransferAkunOptions();
+    });
+
+    // Transfer nominal and biaya admin formatting
+    transferNominalInput.addEventListener("input", () => {
+      formatInputCurrency(transferNominalInput);
+    });
+    transferBiayaAdminInput.addEventListener("input", () => {
+      formatInputCurrency(transferBiayaAdminInput);
+    });
+
+    // Transfer form submit
+    transferForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const userPengirim = transferUserPengirimSelect.value;
+      const akunPengirimId = transferAkunPengirimSelect.value;
+      const userPenerima = transferUserPenerimaSelect.value;
+      const akunPenerimaId = transferAkunPenerimaSelect.value;
+      const nominal = parseRp(transferNominalInput.value);
+      const biayaAdmin = parseRp(transferBiayaAdminInput.value) || 0;
+      const tanggal = transferTanggalInput.value;
+      const catatan = transferCatatanInput.value.trim();
+
+      if (!userPengirim || !akunPengirimId || !userPenerima || !akunPenerimaId || !tanggal || nominal <= 0) {
+        alert("Mohon isi semua kolom dengan benar.");
+        return;
+      }
+      if (akunPengirimId === akunPenerimaId) {
+        alert("Akun pengirim dan penerima tidak boleh sama.");
+        return;
+      }
+
+      // Add transfer
+      transferList.push({
+        id: generateId(),
+        userPengirim,
+        akunPengirimId,
+        userPenerima,
+        akunPenerimaId,
+        nominal,
+        biayaAdmin,
+        tanggal,
+        catatan,
+      });
+
+      // Add biaya admin as pengeluaran user pengirim
+      if (biayaAdmin > 0) {
+        transaksiList.push({
+          id: generateId(),
+          user: userPengirim,
+          type: "pengeluaran",
+          subCategory: "transfer",
+          nominal: biayaAdmin,
+          tanggal,
+          catatan: `Biaya admin transfer: ${catatan}`,
+          akunId: akunPengirimId,
+        });
+      }
+
+      updateAllAkunSaldo();
+      saveData();
+      transferForm.reset();
+      updateTransferAkunOptions();
+      alert("Transfer berhasil disimpan.");
+      if (document.querySelector(".menu-tab.text-white").dataset.menu === "history") {
+        renderHistoryTable();
+      }
+      if (document.querySelector(".menu-tab.text-white").dataset.menu === "dashboard") {
+        updateDashboard();
+      }
+    });
+
+    // History edit transaction button click (delegated)
+    historyTableBody.addEventListener("click", (e) => {
+      if (e.target.closest(".edit-transaction-btn")) {
+        const id = e.target.closest(".edit-transaction-btn").dataset.id;
+        const isTransfer = e.target.closest(".edit-transaction-btn").dataset.isTransfer === "true";
+        editingTransactionId = id;
+        if (isTransfer) {
+          // Edit transfer
+          const tr = transferList.find((t) => t.id === id);
+          if (!tr) return;
+          modalEditTransaction.classList.remove("hidden");
+          editTransaksiUserSelect.value = tr.userPengirim;
+          editTransaksiTypeSelect.value = "transfer";
+          updateTransaksiSubCategoryOptions(editTransaksiSubCategorySelect, "transfer");
+          editTransaksiSubCategorySelect.value = "transfer";
+          editTransaksiNominalInput.value = tr.nominal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+          editTransaksiTanggalInput.value = tr.tanggal;
+          editTransaksiCatatanInput.value = tr.catatan || "";
+          // Disable editing subcategory and type for transfer
+          editTransaksiTypeSelect.disabled = true;
+          editTransaksiSubCategorySelect.disabled = true;
+        } else {
+          // Edit transaksi
+          const t = transaksiList.find((t) => t.id === id);
+          if (!t) return;
+          modalEditTransaction.classList.remove("hidden");
+          editTransaksiUserSelect.value = t.user;
+          editTransaksiTypeSelect.value = t.type;
+          updateTransaksiSubCategoryOptions(editTransaksiSubCategorySelect, t.type);
+          editTransaksiSubCategorySelect.value = t.subCategory;
+          editTransaksiNominalInput.value = t.nominal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+          editTransaksiTanggalInput.value = t.tanggal;
+          editTransaksiCatatanInput.value = t.catatan || "";
+          editTransaksiTypeSelect.disabled = false;
+          editTransaksiSubCategorySelect.disabled = false;
+        }
+      }
+    });
+
+    // Edit transaction type change in modal
+    editTransaksiTypeSelect.addEventListener("change", () => {
+      updateTransaksiSubCategoryOptions(editTransaksiSubCategorySelect, editTransaksiTypeSelect.value);
+    });
+
+    // Cancel edit transaction modal
+    cancelEditTransactionBtn.addEventListener("click", () => {
+      modalEditTransaction.classList.add("hidden");
+      editingTransactionId = null;
+    });
+
+    // Edit transaction form submit
+    editTransactionForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (!editingTransactionId) return;
+
+      const type = editTransaksiTypeSelect.value;
+      const subCategory = editTransaksiSubCategorySelect.value;
+      const nominal = parseRp(editTransaksiNominalInput.value);
+      const tanggal = editTransaksiTanggalInput.value;
+      const catatan = editTransaksiCatatanInput.value.trim();
+      const user = editTransaksiUserSelect.value;
+
+      if (!user || !type || !subCategory || !tanggal || nominal <= 0) {
+        alert("Mohon isi semua kolom dengan benar.");
+        return;
+      }
+
+      // Check if editing transfer or transaksi
+      const trIndex = transferList.findIndex((tr) => tr.id === editingTransactionId);
+      if (trIndex !== -1) {
+        // Editing transfer
+        const tr = transferList[trIndex];
+        // Only allow editing tanggal, nominal, catatan, userPengirim
+        tr.userPengirim = user;
+        tr.tanggal = tanggal;
+        tr.nominal = nominal;
+        tr.catatan = catatan;
+        // For simplicity, do not allow changing akunPengirim, userPenerima, akunPenerima, biayaAdmin here
+        // Remove biaya admin pengeluaran transaksi related to this transfer
+        transaksiList = transaksiList.filter((t) => !(t.catatan && t.catatan.startsWith("Biaya admin transfer") && t.tanggal === tr.tanggal && t.user === tr.userPengirim));
+        // If biayaAdmin > 0, add new pengeluaran transaksi
+        if (tr.biayaAdmin && tr.biayaAdmin > 0) {
+          transaksiList.push({
+            id: generateId(),
+            user: tr.userPengirim,
+            type: "pengeluaran",
+            subCategory: "transfer",
+            nominal: tr.biayaAdmin,
+            tanggal: tr.tanggal,
+            catatan: `Biaya admin transfer: ${catatan}`,
+            akunId: tr.akunPengirimId,
+          });
+        }
+        transferList[trIndex] = tr;
+      } else {
+        // Editing transaksi
+        const tIndex = transaksiList.findIndex((t) => t.id === editingTransactionId);
+        if (tIndex === -1) return;
+        const t = transaksiList[tIndex];
+        t.user = user;
+        t.type = type;
+        t.subCategory = subCategory;
+        t.nominal = nominal;
+        t.tanggal = tanggal;
+        t.catatan = catatan;
+        // For akunId, keep the same akunId for simplicity
+        transaksiList[tIndex] = t;
+      }
+
+      updateAllAkunSaldo();
+      saveData();
+      renderHistoryTable();
+      renderAkunList();
+      updateDashboard();
+      modalEditTransaction.classList.add("hidden");
+      editingTransactionId = null;
+      alert("Transaksi berhasil diperbarui.");
+    });
+
+    // Dashboard user buttons click
+    dashboardUserBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        dashboardUserBtns.forEach((b) => b.classList.remove("text-white"));
+        btn.classList.add("text-white");
+        updateDashboard();
+      });
+    });
+
+    // Dashboard filters change
+    dashboardRangeSelect.addEventListener("change", updateDashboard);
+    dashboardCategorySelect.addEventListener("change", updateDashboard);
+
+    // Download laporan button
+    downloadReportBtn.addEventListener("click", () => {
+      downloadLaporanExcel();
+    });
+
+    // Initialize app
+    function init() {
+      loadData();
+
+      // If no akun, add default akun for each user
+      if (akunList.length === 0) {
+        akunList.push(
+          { id: generateId(), user: "malvin", name: "Wallet Malvin", saldoAwal: 0, saldo: 0 },
+          { id: generateId(), user: "yovita", name: "Wallet Yovita", saldoAwal: 0, saldo: 0 }
+        );
+        saveData();
+      }
+
+      updateAllAkunSaldo();
+      updateCurrentUserUI();
+      switchMenu("dashboard");
+      renderAkunList();
+      renderHistoryTable();
+      updateDashboard();
+      updateTransaksiSubCategoryOptions(transaksiSubCategorySelect, transaksiTypeSelect.value);
+      updateTransferAkunOptions();
+
+      // Set default dashboard user button to Malvin
+      dashboardUserBtns.forEach((btn) => {
+        if (btn.dataset.dashboardUser === "malvin") {
+          btn.classList.add("text-white");
+        } else {
+          btn.classList.remove("text-white");
+        }
+      });
+
+      // Set default date inputs to today
+      const today = new Date().toISOString().slice(0, 10);
+      transaksiTanggalInput.value = today;
+      transferTanggalInput.value = today;
+      editTransaksiTanggalInput.value = today;
+    }
+
+    init();
+  })();
+</script>
+</body></html>
